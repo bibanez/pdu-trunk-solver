@@ -13,4 +13,4 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Add compiler flags
 add_compile_options(-Wall -Wextra -O3 -g)
 
-add_executable(trunk-solver main.cc)
+add_executable(trunk-solver main.cc types.h types.cc)
