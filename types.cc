@@ -1,8 +1,18 @@
 #include "types.h"
 using namespace std;
 
-std::pair<int, int> shape(const Matrix &matrix) {
+pair<int, int> shape(const Matrix &matrix) {
   return {matrix.size(), matrix[0].size()};
+}
+
+int Rectangle::area() const { return (r - l) * (t - b); }
+
+bool Rectangle::operator==(const Rectangle &other) const {
+  return l == other.l && r == other.r && b == other.b && t == other.t;
+}
+
+bool Rectangle::operator<(const Rectangle &other) const {
+  return this->area() < other.area();
 }
 
 vector<int> horizontal_edges(const Matrix &matrix) {
@@ -77,16 +87,29 @@ HananGrid::HananGrid(const Matrix &matrix) {
   _width = _x_coordinates.size() - 1;
   _height = _y_coordinates.size() - 1;
 
+  _grid_area = _grid_selected = 0;
   _mat_accumulation = Matrix(_width, Row(_height));
-  for (int i = 0; i < _width; ++i)
-    for (int j = 0; j < _height; ++j)
-      _mat_accumulation[i][j] =
-          rectangle_sum(matrix, from_hanan({i, i + 1, j, j + 1}));
+  _mat_areas = Matrix(_width, Row(_height));
+  for (int i = 0; i < _width; ++i) {
+    for (int j = 0; j < _height; ++j) {
+      Rectangle r = from_hanan({i, i + 1, j, j + 1});
+      _mat_accumulation[i][j] = rectangle_sum(matrix, r);
+      _grid_selected += _mat_accumulation[i][j];
+      _mat_areas[i][j] = r.area();
+      _grid_area += _mat_areas[i][j];
+    }
+  }
 }
 
-Matrix HananGrid::get_accumulation() { return _mat_accumulation; }
+int HananGrid::get_area() const { return _grid_area; }
 
-Rectangle HananGrid::from_hanan(const Rectangle &r) {
+int HananGrid::get_selected_area() const { return _grid_selected; }
+
+Matrix HananGrid::get_accumulation() const { return _mat_accumulation; }
+
+Matrix HananGrid::get_areas() const { return _mat_areas; }
+
+Rectangle HananGrid::from_hanan(const Rectangle &r) const {
   return {_x_coordinates[r.l], _x_coordinates[r.r], _y_coordinates[r.b],
           _y_coordinates[r.t]};
 }
