@@ -14,6 +14,18 @@ void print_matrix(const Matrix &matrix) {
   cout << endl;
 }
 
+void print_rectangle(const Rectangle &r, int width, int height) {
+  for (int i = 0; i < width; ++i) {
+    for (int j = 0; j < height; ++j) {
+      if (i >= r.l and i < r.r and j >= r.b and j < r.t)
+        cout << "1 ";
+      else
+        cout << "0 ";
+    }
+    cout << endl;
+  }
+}
+
 int main() {
   int n, m;
   cin >> n >> m;
@@ -22,13 +34,19 @@ int main() {
     for (int j = 0; j < m; ++j)
       cin >> matrix[i][j];
 
+  cout << "Original matrix:" << endl;
+  print_matrix(matrix);
+
   HananGrid grid(matrix);
+  cout << "Hanan grid accumulation:" << endl;
   print_matrix(grid.get_accumulation());
+  cout << "Hanan grid areas:" << endl;
   print_matrix(grid.get_areas());
 
-  auto [res, rect] = calculate_trunk(grid, 0.2);
+  auto [res, rect] = calculate_trunk(grid, 0.05);
   if (res) {
-    cout << rect.l << ' ' << rect.r << ' ' << rect.b << ' ' << rect.t << endl;
+    cout << "Trunk:" << endl;
+    print_rectangle(rect, n, m);
   } else {
     cout << "Could not solve" << endl;
   }
